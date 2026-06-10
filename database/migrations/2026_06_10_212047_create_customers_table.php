@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('phone');
-            $table->string('shipping_address');
-            $table->string('shipping_city');
-            $table->string('shipping_state');
+            $table->string('shipping_address')->nullable();
+            $table->string('shipping_city')->nullable();
+            $table->string('shipping_state')->nullable();
             $table->string('shipping_zip')->nullable();
             $table->timestamps();
         });
