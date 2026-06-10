@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('products', function (Blueprint $table) {
@@ -19,7 +16,11 @@ return new class extends Migration
             $table->decimal('price', 10, 2);
             $table->decimal('compare_price', 10, 2)->nullable();
             $table->unsignedInteger('stock')->default(0);
-            $table->foreignId('category_id')->constrained('categories')->nullOnDelete();
+            $table->unsignedBigInteger('category_id')->nullable(); // ← nullable first
+            $table->foreign('category_id')                        // ← then foreign key
+                  ->references('id')
+                  ->on('categories')
+                  ->nullOnDelete();
             $table->json('image')->nullable();
             $table->boolean('is_active')->default(true);
             $table->boolean('is_featured')->default(false);
@@ -27,9 +28,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('products');
