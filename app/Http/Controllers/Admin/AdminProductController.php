@@ -104,7 +104,6 @@ public function categoryStore(Request $request)
 {
     $data = $request->validate([
         'name'        => 'required|string|max:255',
-        'description' => 'nullable|string',
         'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         'is_active'   => 'nullable|boolean',
     ]);
@@ -129,7 +128,6 @@ public function categoryUpdate(Request $request, Category $category)
 {
     $data = $request->validate([
         'name'        => 'required|string|max:255',
-        'description' => 'nullable|string',
         'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         'is_active'   => 'nullable|boolean',
     ]);
@@ -199,7 +197,6 @@ public function categoryShow(Category $category)
     {
         return $request->validate([
             'name'      => 'required|string|max:255',
-            'description' => 'nullable|string',
             'image'     => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'is_active' => 'boolean',
         ]);
