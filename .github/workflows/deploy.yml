@@ -76,7 +76,7 @@ jobs:
           port: 21
           protocol: ftp
           local-dir: ./
-          server-dir: public_html/outgoing-peach-beetle.williams04group.com/Yipshop/
+          server-dir: /Yipshop/
           exclude: |
             **/.git*
             **/.git*/**
