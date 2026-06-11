@@ -58,10 +58,12 @@ Route::prefix('cart')->name('cart.')->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::prefix('checkout')->name('checkout.')->middleware('auth')->group(function () {
-    Route::get('/', [CheckoutController::class, 'index'])->name('index');
-    Route::post('/place-order', [CheckoutController::class, 'placeOrder'])->name('place-order');
-    Route::get('/success/{order}', [CheckoutController::class, 'success'])->name('success');
+Route::middleware('auth')->group(function () {
+    Route::get('/checkout',              [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout/place-order', [CheckoutController::class, 'placeOrder'])->name('checkout.place-order');
+    Route::get('/checkout/success/{order}', [CheckoutController::class, 'success'])->name('checkout.success');
+    Route::get('/orders',                [CheckoutController::class, 'myOrders'])->name('orders.index');
+    Route::post('/account/shipping',     [CheckoutController::class, 'updateShippingInfo'])->name('account.shipping.update');
 });
 
 Route::get('/orders', [CheckoutController::class, 'myOrders'])->name('orders.index')->middleware('auth');
