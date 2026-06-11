@@ -12,11 +12,9 @@ jobs:
 
     steps:
 
-      # 1. Checkout code
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Setup PHP 8.2
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -24,16 +22,6 @@ jobs:
           extensions: mbstring, bcmath, pdo, pdo_mysql, zip, gd, curl
           coverage: none
 
-      # 3. Install Composer dependencies
-      - name: Install dependencies
-        run: |
-          composer install \
-            --no-dev \
-            --optimize-autoloader \
-            --no-interaction \
-            --prefer-dist
-
-      # 4. Create .env for production
       - name: Create .env file
         run: |
           cat > .env << EOF
@@ -59,14 +47,6 @@ jobs:
           FILESYSTEM_DISK=public
           EOF
 
-      # 5. Cache Laravel config
-      - name: Optimize Laravel
-        run: |
-          php artisan config:cache
-          php artisan route:cache
-          php artisan view:cache
-
-      # 6. Deploy via FTP to directory
       - name: Deploy to Go54 via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -77,10 +57,13 @@ jobs:
           protocol: ftps
           local-dir: ./
           server-dir: /
+          timeout: 120000
           exclude: |
             **/.git*
             **/.git*/**
             **/node_modules/**
+            **/vendor/**
             **/tests/**
             .env.example
             README.md
+            *.log
