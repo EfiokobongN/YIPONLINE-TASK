@@ -172,49 +172,80 @@
 </head>
 <body>
 
-<nav class="navbar">
-    <div class="nav-inner">
-        <a href="{{ route('home') }}" class="nav-brand">YIP<span>Shop</span></a>
+    <nav class="navbar">
+        <div class="nav-inner">
+            <a href="{{ route('home') }}" class="nav-brand">YIP<span>Shop</span></a>
 
-        <form class="nav-search" action="{{ route('products.search') }}" method="GET">
-            <input type="text" name="q" placeholder="Search products…"
-                   value="{{ request('q') }}">
-            <button type="submit">Search</button>
-        </form>
-
-        <button class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')">☰</button>
-
-        <ul class="nav-links">
-            <li><a href="{{ route('home') }}">Shop</a></li>
-
-            @auth
-                <li><a href="{{ route('orders.index') }}">My Orders</a></li>
-                @if(auth()->user()->isAdmin())
-                    <li><a href="{{ route('admin.orders.index') }}">Admin</a></li>
-                @endif
-                <li>
-                    <form method="POST" action="{{ route('logout') }}" style="display:inline">
-                        @csrf
-                        <button type="submit" style="background:none;border:none;color:rgba(255,255,255,.85);cursor:pointer;font-size:.9rem">Logout</button>
-                    </form>
-                </li>
+            {{-- Hide search bar for admin --}}
+            @if(!auth()->check() || !auth()->user()->isAdmin())
+                <form class="nav-search" action="{{ route('products.search') }}" method="GET">
+                    <input type="text" name="q" placeholder="Search products…"
+                           value="{{ request('q') }}">
+                    <button type="submit">Search</button>
+                </form>
             @else
-                <li><a href="{{ route('login') }}">Login</a></li>
-                {{-- <li><a href="{{ route('register') }}">Register</a></li> --}}
-            @endauth
+                {{-- Admin brand/title instead of search --}}
+                <span style="color:rgba(255,255,255,.6);font-size:.9rem;flex:1">
+                    Admin Panel
+                </span>
+            @endif
 
-            <li>
-                <a href="{{ route('cart.index') }}" class="nav-cart">
-                    🛒 Cart
-                    @php $cartCount = collect(session('cart', []))->sum('quantity') @endphp
-                    @if($cartCount > 0)
-                        <span class="cart-count">{{ $cartCount }}</span>
+            <button class="hamburger"
+                    onclick="document.querySelector('.nav-links').classList.toggle('open')">☰</button>
+
+            <ul class="nav-links">
+                @auth
+                    @if(auth()->user()->isAdmin())
+                    <li><a href="{{ route('home') }}">Shop</a></li>
+                        <li><a href="{{ route('admin.orders.index') }}">📦 Orders</a></li>
+                        <li><a href="{{ route('admin.products.index') }}">🛍️ Products</a></li>
+                        <li><a href="{{ route('admin.categories.index') }}">🗂️ Categories</a></li>
+                        <li>
+                            <form method="POST" action="{{ route('logout') }}" style="display:inline">
+                                @csrf
+                                <button type="submit" style="background:none;border:none;color:rgba(255,255,255,.85);cursor:pointer;font-size:.9rem">
+                                    Logout
+                                </button>
+                            </form>
+                        </li>
+                    @else
+                        <li><a href="{{ route('home') }}">Shop</a></li>
+                        <li><a href="{{ route('orders.index') }}">My Orders</a></li>
+                        <li>
+                            <form method="POST" action="{{ route('logout') }}" style="display:inline">
+                                @csrf
+                                <button type="submit" style="background:none;border:none;color:rgba(255,255,255,.85);cursor:pointer;font-size:.9rem">
+                                    Logout
+                                </button>
+                            </form>
+                        </li>
+                        <li>
+                            <a href="{{ route('cart.index') }}" class="nav-cart">
+                                🛒 Cart
+                                @php $cartCount = collect(session('cart', []))->sum('quantity') @endphp
+                                @if($cartCount > 0)
+                                    <span class="cart-count">{{ $cartCount }}</span>
+                                @endif
+                            </a>
+                        </li>
                     @endif
-                </a>
-            </li>
-        </ul>
-    </div>
-</nav>
+                @else
+                    <li><a href="{{ route('home') }}">Shop</a></li>
+                    <li><a href="{{ route('login') }}">Login</a></li>
+                    <li><a href="{{ route('register') }}">Register</a></li>
+                    <li>
+                        <a href="{{ route('cart.index') }}" class="nav-cart">
+                            🛒 Cart
+                            @php $cartCount = collect(session('cart', []))->sum('quantity') @endphp
+                            @if($cartCount > 0)
+                                <span class="cart-count">{{ $cartCount }}</span>
+                            @endif
+                        </a>
+                    </li>
+                @endauth
+            </ul>
+        </div>
+    </nav>
 
 @if(session('success'))
     <div class="alert alert-success container">{{ session('success') }}</div>
