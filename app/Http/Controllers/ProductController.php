@@ -2,64 +2,65 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        return view('products.index');
+    public function index(Request $request)
+{
+    $query = Product::active();
+
+    if ($request->category_id) {
+        $query->where('category_id', $request->category_id);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+    if ($request->sort === 'price_asc') {
+        $query->orderBy('price', 'asc');
+    } elseif ($request->sort === 'price_desc') {
+        $query->orderBy('price', 'desc');
+    } elseif ($request->sort === 'newest') {
+        $query->latest();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+    $products   = $query->paginate(12)->withQueryString();
+    $categories = Category::where('is_active', true)->get(); // ← fetch from categories table
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Product $product)
-    {
-        //
-    }
+    return view('products.index', compact('products', 'categories'));
+}
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Product $product)
-    {
-        //
-    }
+public function show($slug)
+{
+    $product = Product::active()->with('category')->where('slug', $slug)->firstOrFail();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Product $product)
-    {
-        //
-    }
+    // Related products via category_id not category string
+    $related = Product::active()
+        ->with('category')
+        ->where('category_id', $product->category_id)
+        ->where('id', '!=', $product->id)
+        ->take(4)
+        ->get();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Product $product)
-    {
-        //
-    }
+    return view('products.show', compact('product', 'related'));
+}
+
+public function search(Request $request)
+{
+    $q = $request->q;
+
+    $products = Product::active()
+        ->with('category')
+        ->where(function($query) use ($q) {
+            $query->where('name', 'like', "%{$q}%")
+                  ->orWhere('description', 'like', "%{$q}%");
+        })
+        ->paginate(12)
+        ->withQueryString();
+
+    $categories = Category::where('is_active', true)->get();
+
+    return view('products.index', compact('products', 'categories'))
+           ->with('searchQuery', $q);
+}
 }
