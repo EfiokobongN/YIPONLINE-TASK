@@ -50,8 +50,6 @@
     {{-- Nav Tabs --}}
     <div class="admin-nav">
         <a href="{{ route('admin.orders.index') }}" class="active">📦 Orders</a>
-        <a href="{{ route('admin.products.index') }}">🛍️ Products</a>
-        <a href="{{ route('admin.categories.index') }}">🗂️ Categories</a>
     </div>
 
     {{-- Stats --}}
