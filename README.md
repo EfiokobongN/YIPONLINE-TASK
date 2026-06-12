@@ -113,7 +113,7 @@ return $smarty->response('products/listing', [
 
 The application is deployed on Go54 shared hosting and accessible at:
 
-🌐 **https://yipshop.williams04group.com**
+🌐 **https://yip.williams04group.com**
 
 CI/CD is set up via GitHub Actions using FTP deployment — every push to the `main` branch automatically deploys to the server.
 
@@ -130,6 +130,6 @@ CI/CD is set up via GitHub Actions using FTP deployment — every push to the `m
 
 ## Author
 
-Built by **Faith** for the YIPONLINE job application case study.
+Built by **EFIOKOBONG NELSON** for the YIPONLINE job application case study.
 
 > *"This project demonstrates my ability to build a complete, production-ready Laravel application from scratch — covering authentication, e-commerce logic, admin management, and deployment."*
